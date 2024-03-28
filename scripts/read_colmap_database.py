@@ -65,6 +65,7 @@ f_images.close()
 
 # Open the database.
 database_path = dataset_path+"/colmap/database.db"
+print('reading from', dataset_path)
 db = COLMAPDatabase.connect(database_path)
 
 two_view_geometries = db.execute("SELECT * FROM two_view_geometries")
@@ -109,9 +110,19 @@ for two_view_geometry in two_view_geometries:
 
     corrresponding1 = feature1[matches[:,0],:]
     corrresponding2 = feature2[matches[:,1],:]
-    
-    camera1 = cameras[images[image1_name][0]]
-    camera2 = cameras[images[image2_name][0]]
+
+
+    try:
+        camera1 = cameras[images[image1_name][0]]
+    except KeyError:
+        print('no camera found for ', image1_name)
+        continue
+    try:
+        camera2 = cameras[images[image2_name][0]]
+    except KeyError:
+        print('no camera found for ', image2_name)
+        continue
+
     pose1 = images[image1_name][1]
     pose2 = images[image2_name][1]
     camera1 = {'model': 'PINHOLE', 'width': camera1[0], 'height': camera1[1], 'params': [camera1[2],camera1[3],camera1[4],camera1[5]]}
