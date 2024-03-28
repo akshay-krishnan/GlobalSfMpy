@@ -40,3 +40,9 @@ database.db
 images.txt
 points3D.txt
 project.ini
+
+
+datasets/**
+output/**
+*.txt
+**log
