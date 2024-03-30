@@ -5,7 +5,8 @@ import shutil
 sys.path.append('../build')
 import GlobalSfMpy as sfm
 from loss_functions import *
-    
+import logging
+
 def sfm_with_1dsfm_dataset(flagfile,dataset_path,
                            loss_func_rotation,
                            loss_func_position,
@@ -46,7 +47,6 @@ def sfm_pipeline(flagfile,dataset_path,
         reconstruction_builder = sfm.ReconstructionBuilder(options,database)
         sfm.AddColmapMatchesToReconstructionBuilder(dataset_path+"/two_views.txt",dataset_path+"/images/*.JPG",reconstruction_builder)
         
-    
     reconstruction_builder.CheckView()
     view_graph = reconstruction_builder.get_view_graph()
     reconstruction = reconstruction_builder.get_reconstruction()
@@ -144,5 +144,10 @@ if __name__ == '__main__':
         os.remove(output_reconstruction)
     sfm.WriteReconstruction(reconstruction, output_reconstruction)
     sfm.WritePlyFile(output_reconstruction + '.ply', reconstruction, 2)
-    
+    colmap_out_dir = output_reconstruction + '_colmap' 
+    os.makedirs(colmap_out_dir)
+    status = sfm.WriteColmapFiles(reconstruction, colmap_out_dir)
+    if not status:
+        raise ValueError('unable to write colmap files')
+
     sfm.StopGlog()
