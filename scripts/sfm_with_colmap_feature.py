@@ -5,13 +5,14 @@ sys.path.append('../build')
 import GlobalSfMpy as sfm
 from loss_functions import *
 from sfm_pipeline import *
-import logging
 import argparse
+import logging
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--dataset_path", default="../datasets/facade")
 args = parser.parse_args()
-
+dataset_path = args.dataset_path
+dataset_name = dataset_path.split("/")[-1]
 
 flagfile = "../flags_1dsfm.yaml"
 f = open(flagfile,"r")
@@ -20,9 +21,6 @@ glog_directory = config['glog_directory']
 glog_verbose = config['v']
 log_to_stderr = config['log_to_stderr']
 sfm.InitGlog(glog_verbose,log_to_stderr,glog_directory)
-
-dataset_path = args.dataset_path
-dataset_name = dataset_path.split('/')[-1]
 
 colmap_path = dataset_path+"/colmap/images.txt"
 output_reconstruction = "../output/"+dataset_name

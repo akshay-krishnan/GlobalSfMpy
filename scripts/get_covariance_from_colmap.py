@@ -5,12 +5,13 @@ sys.path.append('../build')
 import GlobalSfMpy as sfm
 import argparse
 
+flagfile = "../flags_1dsfm.yaml"
 parser = argparse.ArgumentParser()
 parser.add_argument("--dataset_path", default="../datasets/facade")
 args = parser.parse_args()
 
-flagfile = "../flags_1dsfm.yaml"
 dataset_path = args.dataset_path
+
 
 if os.path.exists(dataset_path+"/covariance_rot.txt"):
     print("Covariance already exists!")
@@ -31,8 +32,8 @@ print('reading from ', dataset_path+'/database')
 options = sfm.ReconstructionBuilderOptions()
 sfm.load_1DSFM_config(flagfile,options)
 reconstruction_builder = sfm.ReconstructionBuilder(options,database)
-# sfm.AddColmapMatchesToReconstructionBuilder(dataset_path+"/two_views.txt",reconstruction_builder,database)
 sfm.AddColmapMatchesToReconstructionBuilder(dataset_path+"/two_views.txt",dataset_path+"/images/*.JPG",reconstruction_builder)
+        
 
 reconstruction_builder.CheckView()
 view_graph = reconstruction_builder.get_view_graph()
